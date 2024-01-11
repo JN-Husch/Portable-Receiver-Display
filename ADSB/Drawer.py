@@ -1,5 +1,9 @@
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+#
+#  Drawing functions using Pillow
+#
+
 import os
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 def CreateNew(w,h):
     shape = [(0, 0), (w, h)] 

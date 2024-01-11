@@ -1,9 +1,12 @@
+#
+# Data loading from aircraf.json
+#
+
+import json
+import Classes
+
 from contextlib import closing
 from urllib.request import Request, urlopen
-import json
-import math
-import VectorCalc
-import Classes
 
 
 def fetchADSBData(url):

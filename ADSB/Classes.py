@@ -1,3 +1,7 @@
+#
+# Basic Classes
+#
+
 class Aircraft:
     hex = ""
     flt = ""

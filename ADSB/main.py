@@ -1,3 +1,7 @@
+#
+# Main Program Loop
+#
+
 import threading
 import time
 import DataFetcher

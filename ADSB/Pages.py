@@ -1,10 +1,12 @@
+# 
+# Content of individual pages
+#
+
 import Drawer
 import subprocess
 
-
 font_large = 20
 font_small = 20
-
 
 def Page0(img,tgts,rate_avg,tgts_daily):
     img = Drawer.CreateText(img,10,5,"ADSB",font="ArialBold.ttf",sze=font_large)
