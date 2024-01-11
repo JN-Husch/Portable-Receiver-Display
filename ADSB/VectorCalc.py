@@ -6,7 +6,7 @@ import math
 import Classes
 
 #Returns the 2D Distance in m
-def DisCalc2D(lat_tgt,lng_tgt,homePos:Classes.HomePosition):
+def DisCalc2D(lat_tgt,lng_tgt,homePos:Classes.Position3D):
     
     d_lat = (lat_tgt - homePos.lat) * 60
     d_lng = (lng_tgt - homePos.lng) * 60 * math.cos(homePos.lat * math.pi / 180)
@@ -18,7 +18,7 @@ def DisCalc2D(lat_tgt,lng_tgt,homePos:Classes.HomePosition):
     return dis_2D
 
 #Return: 0: 3D Distance in m, 1: Azimuth in °, 2: Ele in °
-def AngleCalc(alt_tgt, lat_tgt, lng_tgt,  homePos: Classes.HomePosition):
+def AngleCalc(alt_tgt, lat_tgt, lng_tgt,  homePos: Classes.Position3D):
     if lat_tgt == -999 or lng_tgt == -999:
         return [-999,-999,-999]
 

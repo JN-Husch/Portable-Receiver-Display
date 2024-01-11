@@ -17,7 +17,7 @@ class Aircraft:
     msgs = 0
 
 
-class HomePosition:
-    lat = 0
-    lng = 0
-    alt = 0
+class Position3D:
+    lat = -999
+    lng = -999
+    alt = -999

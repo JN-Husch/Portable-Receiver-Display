@@ -4,6 +4,7 @@
 
 import Drawer
 import subprocess
+import Classes
 
 font_large = 20
 font_small = 20
@@ -59,28 +60,28 @@ def Page2(img,tgts):
 
     return img
 
-def Page3(img,lat,lng,alt,sat_cnt,sat_cnt_tot,time):
+def Page3(img,rec_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
     img = Drawer.CreateText(img,10,5,"GPS",font="ArialBold.ttf",sze=font_large)
 
     lat_s = "No 2D Fix"
-    if lat is not None:
-        lat_s = str(round(lat,5)) + "°"
+    if rec_pos.lat is not None:
+        lat_s = str(round(rec_pos.lat,5)) + "°"
 
     img = Drawer.CreateText(img,10,35,"Lat:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,55,lat_s,font="ArialBold.ttf",sze=font_small)
 
     lng_s = "No 2D Fix"
-    if lng is not None:
-        lng_s = str(round(lng,5)) + "°"
+    if rec_pos.lng is not None:
+        lng_s = str(round(rec_pos.lng,5)) + "°"
 
     img = Drawer.CreateText(img,10,80,"Lon:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,100,lng_s,font="ArialBold.ttf",sze=font_small)
 
 
     alt_string = "No 3D Fix"
-    if alt is not None:
+    if rec_pos.alt is not None:
         try:
-            alt_string = str(round(alt)) + "m"
+            alt_string = str(round(rec_pos.alt)) + "m"
         except:
             alt_string = "UKN"
 
@@ -122,4 +123,46 @@ def Page5(img):
     img = Drawer.CreateText(img,10,95,"IP:",font="Arial.ttf",sze=font_large)    
     img = Drawer.CreateText(img,10,120,res,font="ArialBold.ttf",sze=15)
 
+    return img
+
+def PageSelector(img,page_no):
+    if page_no == 0:
+        img = Drawer.CreateRectangle(img,5,275,15,19)
+        img = Drawer.CreateText(img,8,275,("1"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+
+    elif page_no == 1:
+        img = Drawer.CreateRectangle(img,30,275,15,19)
+        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,33,275,("2"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+
+    elif page_no == 2:
+        img = Drawer.CreateRectangle(img,55,275,15,19)
+        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,58,275,("3"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+
+    elif page_no == 3:
+        img = Drawer.CreateRectangle(img,80,275,15,19)
+        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,83,275,("4"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+
+    elif page_no == 4:
+        img = Drawer.CreateRectangle(img,105,275,15,19)
+        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
+        img = Drawer.CreateText(img,108,275,("5"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
     return img
