@@ -35,7 +35,7 @@ home_pos.lat = 0                    # Home Latitude
 home_pos.lng = 0                    # Home Longitude
 home_pos.alt = 0                    # Home Altitude in m
 
-use_gps = True                      # Variable if a GPS receiver is available
+use_gps = False                      # Variable if a GPS receiver is available
 
 ####################################################################################
 #
@@ -252,6 +252,7 @@ def ClearScreen():
     epd.Clear(0xFF)
     time.sleep(1)
 
+# Main Task
 def task1():
     # Main Loop triggered every second
     time_last_data = time.time() - delay_data
@@ -285,6 +286,12 @@ def task1():
     ClearScreen()                           # Clearing the screen before commencing shutdown
     time.sleep(1)
     os.system("sudo shutdown now -h")       # Sending the shutdown command to the OS
+
+# Optional Task to automatically adjust gain every 2 minutes - Currently not called
+def task2():
+    print("Automatically adjusting gain...")
+    os.system("sudo autogain1090") 
+    print("Done!")
 
 # Clear Stats
 def Clear():
@@ -393,8 +400,8 @@ t1.start()
 
 print("Starting schedules...")
 #schedule.every().day.at("00:05").do(Clear)
-#schedule.every(1).seconds.do(task1())
+#schedule.every(2).minutes.do(task2)
 
 while True:
-    #schedule.run_pending()
+    schedule.run_pending()
     time.sleep(0.1)
