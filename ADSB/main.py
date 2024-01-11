@@ -35,7 +35,7 @@ home_pos.lat = 0                    # Home Latitude
 home_pos.lng = 0                    # Home Longitude
 home_pos.alt = 0                    # Home Altitude in m
 
-use_gps = False                      # Variable if a GPS receiver is available
+use_gps = True                      # Variable if a GPS receiver is available
 
 ####################################################################################
 #
@@ -66,7 +66,7 @@ sat_cnt_tot = 0                     # Total GPS Satellite Count
 sat_time = 0                        # Time from GPS
 
 flash = False                       # Flash Variable used for flashing activity corner
-shutting_down = False               # Flag for Shutdown process initiated
+adjusting_gain = False              # Flag for Gain Adjust Process Initiated
 
 # Events for Threading
 shutdown_event = threading.Event()
@@ -180,6 +180,7 @@ def DataProcessing():
     global sat_cnt
     global sat_cnt_tot
     global sat_time
+    global adjusting_gain
 
     if use_gps:
         getPositionData()
@@ -238,7 +239,7 @@ def DataProcessing():
     elif page_no == 3:
         img = Pages.Page3(img,gps_pos,sat_cnt,sat_cnt_tot,sat_time)
     elif page_no == 4:
-        img = Pages.Page4(img)
+        img = Pages.Page4(img,adjusting_gain)
 
     img = Pages.PageSelector(img,page_no, use_gps)               # Draw Page Selector at the bottom
     img_new = img.rotate(90, expand=True)               # Rotate image to fit vertical screen
@@ -337,11 +338,10 @@ class ButtonHandler(threading.Thread):
 def real_cb(channel):
     global page_no
     global page_timer
+    global adjusting_gain
 
     if channel == 3:
         # PowerButton
-
-        print("Button " + str(channel) + " pressed!")
         shutdown_event.set()
         return
     
@@ -355,10 +355,10 @@ def real_cb(channel):
                 # Detect Long press
                 if page_no == 4:
                     # On Page 4, use Long Press to adjust Gain
-                    print("Automatically adjusting gain...")
-                    os.system("sudo autogain1090") 
-                    print("Done!")
-
+                    adjusting_gain = True
+                    os.system("sudo autogain1090")
+                    time.sleep(3)
+                    adjusting_gain = False
                 else:
                     # On all other pages, reset page to 0, without screen refresh
                     page_no = 0 

@@ -119,7 +119,7 @@ def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
 # Information and Settings
 ###################################################
 
-def Page4(img):
+def Page4(img,gain_adj):
     img = Drawer.CreateText(img,10,5,"Network",font="ArialBold.ttf",sze=font_large)
 
     wifi = subprocess.check_output(['sudo', 'iwgetid']).decode().split("ESSID:")[1].replace("\"","")
@@ -135,9 +135,15 @@ def Page4(img):
     img = Drawer.CreateText(img,10,140,"Receiver",font="ArialBold.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,170,"Gain:",font="Arial.ttf",sze=font_large)    
     img = Drawer.CreateText(img,10,190,DataFetcher.getGain(),font="ArialBold.ttf",sze=font_small)
-    img = Drawer.CreateText(img,10,210,"Hold F button for",font="Arial.ttf",sze=15)    
-    img = Drawer.CreateText(img,10,230,"1s for automatic",font="Arial.ttf",sze=15)    
-    img = Drawer.CreateText(img,10,250,"gain adjustment!",font="Arial.ttf",sze=15)    
+    
+    if gain_adj:
+        img = Drawer.CreateRectangle(img,10,215,108,50)
+        img = Drawer.CreateText(img,10,220,"  Adjusting",font="Arial.ttf",sze=font_small,col="#FFFFFF")    
+        img = Drawer.CreateText(img,10,240,"    gain...",font="Arial.ttf",sze=font_small,col="#FFFFFF")    
+    else:
+        img = Drawer.CreateText(img,10,210,"Hold F button for",font="Arial.ttf",sze=15)    
+        img = Drawer.CreateText(img,10,230,"1s for automatic",font="Arial.ttf",sze=15)    
+        img = Drawer.CreateText(img,10,250,"gain adjustment!",font="Arial.ttf",sze=15)    
 
     return img
 
