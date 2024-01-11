@@ -5,9 +5,14 @@
 import Drawer
 import subprocess
 import Classes
+import DataFetcher
 
 font_large = 20
 font_small = 20
+
+###################################################
+# Main Page showing ADSB Data
+###################################################
 
 def Page0(img,tgts,rate_avg,tgts_daily):
     img = Drawer.CreateText(img,10,5,"ADSB",font="ArialBold.ttf",sze=font_large)
@@ -21,8 +26,18 @@ def Page0(img,tgts,rate_avg,tgts_daily):
     img = Drawer.CreateText(img,10,125,"Total:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,145,str(len(tgts_daily)),font="ArialBold.ttf",sze=font_small)
 
+    max_range = "UNK"
+    if len(tgts) > 0:
+        max_range = str(round(tgts[0].dis / 1852,1)) + "NM"
+
+    img = Drawer.CreateText(img,10,170,"Max Range:",font="Arial.ttf",sze=font_large)
+    img = Drawer.CreateText(img,10,190,max_range,font="ArialBold.ttf",sze=font_small)
 
     return img
+
+###################################################
+# Page Showing an overview of the closest targets
+###################################################
 
 def Page1(img,tgts):
     img = Drawer.CreateText(img,10,5,"Closest",font="ArialBold.ttf",sze=font_large)
@@ -38,10 +53,11 @@ def Page1(img,tgts):
         dis = round(tgts[i].dis / 1852,1)
 
         img = Drawer.CreateText(img,10,55 + i * 48,str(dis) + "NM",font="Arial.ttf",sze=16)
-
-
-
     return img
+
+###################################################
+# Page Showing an overview of the furthest targets
+###################################################
 
 def Page2(img,tgts):
     img = Drawer.CreateText(img,10,5,"Furthest",font="ArialBold.ttf",sze=font_large)
@@ -60,28 +76,32 @@ def Page2(img,tgts):
 
     return img
 
-def Page3(img,rec_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
+###################################################
+# GPS Information
+###################################################
+
+def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
     img = Drawer.CreateText(img,10,5,"GPS",font="ArialBold.ttf",sze=font_large)
 
     lat_s = "No 2D Fix"
-    if rec_pos.lat is not None:
-        lat_s = str(round(rec_pos.lat,5)) + "°"
+    if gps_pos.lat is not None and gps_pos.lat > -999:
+        lat_s = str(round(gps_pos.lat,5)) + "°"
 
     img = Drawer.CreateText(img,10,35,"Lat:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,55,lat_s,font="ArialBold.ttf",sze=font_small)
 
     lng_s = "No 2D Fix"
-    if rec_pos.lng is not None:
-        lng_s = str(round(rec_pos.lng,5)) + "°"
+    if gps_pos.lng is not None and gps_pos.lng > -999:
+        lng_s = str(round(gps_pos.lng,5)) + "°"
 
     img = Drawer.CreateText(img,10,80,"Lon:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,100,lng_s,font="ArialBold.ttf",sze=font_small)
 
 
     alt_string = "No 3D Fix"
-    if rec_pos.alt is not None:
+    if gps_pos.alt is not None and gps_pos.alt > -999:
         try:
-            alt_string = str(round(rec_pos.alt)) + "m"
+            alt_string = str(round(gps_pos.alt)) + "m"
         except:
             alt_string = "UKN"
 
@@ -94,6 +114,10 @@ def Page3(img,rec_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
     img = Drawer.CreateText(img,10,215,"Time:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,235,str(time),font="ArialBold.ttf",sze=font_small)
     return img
+
+###################################################
+# Information and Settings
+###################################################
 
 def Page4(img):
     img = Drawer.CreateText(img,10,5,"Network",font="ArialBold.ttf",sze=font_large)
@@ -108,22 +132,18 @@ def Page4(img):
     img = Drawer.CreateText(img,10,80,"IP:",font="Arial.ttf",sze=font_large)    
     img = Drawer.CreateText(img,10,100,res,font="ArialBold.ttf",sze=15)
 
-    return img
-
-def Page5(img):
-    img = Drawer.CreateText(img,10,5,"Info",font="ArialBold.ttf",sze=font_large)
-
-    wifi = subprocess.check_output(['sudo', 'iwgetid']).decode().split("ESSID:")[1].replace("\"","")
-
-    img = Drawer.CreateText(img,10,35,"WiFi:",font="Arial.ttf",sze=font_large)    
-    img = Drawer.CreateText(img,10,60,wifi,font="ArialBold.ttf",sze=15)
-
-    res = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
-
-    img = Drawer.CreateText(img,10,95,"IP:",font="Arial.ttf",sze=font_large)    
-    img = Drawer.CreateText(img,10,120,res,font="ArialBold.ttf",sze=15)
+    img = Drawer.CreateText(img,10,140,"Receiver",font="ArialBold.ttf",sze=font_large)
+    img = Drawer.CreateText(img,10,170,"Gain:",font="Arial.ttf",sze=font_large)    
+    img = Drawer.CreateText(img,10,190,DataFetcher.getGain(),font="ArialBold.ttf",sze=font_small)
+    img = Drawer.CreateText(img,10,210,"Hold F button for",font="Arial.ttf",sze=15)    
+    img = Drawer.CreateText(img,10,230,"1s for automatic",font="Arial.ttf",sze=15)    
+    img = Drawer.CreateText(img,10,250,"gain adjustment!",font="Arial.ttf",sze=15)    
 
     return img
+
+###################################################
+# Page Selection Function
+###################################################
 
 def PageSelector(img,page_no, use_gps):
     if page_no == 0:

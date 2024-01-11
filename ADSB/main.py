@@ -51,9 +51,9 @@ page_timer = 0                      # Variable for return to page 0 function
 
 # Receiver Position
 rec_pos = Classes.Position3D()
-rec_pos.lat = 0                     # GPS Latitude
-rec_pos.lng = 0                     # GPS Longitude
-rec_pos.alt = 0                     # GPS Altitude in m
+
+# GPS Position
+gps_pos = Classes.Position3D()
 
 # Stats
 tgts_daily = []
@@ -66,6 +66,7 @@ sat_cnt_tot = 0                     # Total GPS Satellite Count
 sat_time = 0                        # Time from GPS
 
 flash = False                       # Flash Variable used for flashing activity corner
+shutting_down = False               # Flag for Shutdown process initiated
 
 # Events for Threading
 shutdown_event = threading.Event()
@@ -101,6 +102,7 @@ def getPositionData():
     global gpsd
     global rec_pos
     global home_pos
+    global gps_pos
     global sat_cnt
     global sat_cnt_tot
     global sat_time
@@ -141,7 +143,6 @@ def getPositionData():
                 # No GPS Position available, set receiver position to home position
                 rec_pos = home_pos
 
-
             # Get Time and Date from GPS
             gps_time = data_stream.TPV['time']
             date = 0
@@ -175,6 +176,7 @@ def DataProcessing():
     global rate_avg
     global flash
     global rec_pos
+    global gps_pos
     global sat_cnt
     global sat_cnt_tot
     global sat_time
@@ -228,13 +230,13 @@ def DataProcessing():
 
     # Select which page to draw
     if page_no == 0:
-        img = Pages.Page0(img,tgts,rate_avg,tgts_daily)
+        img = Pages.Page0(img,tgts_far,rate_avg,tgts_daily)
     elif page_no == 1:
         img = Pages.Page1(img,tgts_close)
     elif page_no == 2:
         img = Pages.Page2(img,tgts_far)
     elif page_no == 3:
-        img = Pages.Page3(img,rec_pos,sat_cnt,sat_cnt_tot,sat_time)
+        img = Pages.Page3(img,gps_pos,sat_cnt,sat_cnt_tot,sat_time)
     elif page_no == 4:
         img = Pages.Page4(img)
 
@@ -251,30 +253,38 @@ def ClearScreen():
     time.sleep(1)
 
 def task1():
+    # Main Loop triggered every second
+    time_last_data = time.time() - delay_data
+
     while not shutdown_event.is_set():
+        # Hold Thread in program loop
         now = time.time()
 
-        if clearscreen_event.is_set():
-            ClearScreen()
-            clearscreen_event.clear()
-
-        if True or (time_last_data + delay_data) < now:
+        if(time_last_data + delay_data) < now:
             time_last_data = now
 
-            DataProcessing()
+        if clearscreen_event.is_set():      # Clear Screen event does a clear screen
+            ClearScreen()
+            clearscreen_event.clear()       # Reset Clear Screen event
 
+        DataProcessing()
+
+    ###################################################
+    # Shutdown Routine:
+    ###################################################
+        
     print("Shutting down...")
 
+    # Display Shutdown image on E-Ink Display:
     img = Drawer.CreateNew(128,296)
     img = Drawer.ShutdownImage(img)
     img_new = img.rotate(90, expand=True)
-
     epd.display(epd.getbuffer(img_new))
 
     time.sleep(3)
-    ClearScreen()
+    ClearScreen()                           # Clearing the screen before commencing shutdown
     time.sleep(1)
-    os.system("sudo shutdown now -h") 
+    os.system("sudo shutdown now -h")       # Sending the shutdown command to the OS
 
 # Clear Stats
 def Clear():
@@ -331,29 +341,35 @@ def real_cb(channel):
     if channel == 4:
         # Function Button
 
-        #print("Automatically adjusting gain...")
-        #os.system("sudo autogain1090") 
-        #print("Done!")
-
         if GPIO.input(4):
             # Falling Edge
-            print("Button " + str(channel) + " released!")
             
             if time.time() - page_timer > 0.5:
-                page_no = 0 
+                # Detect Long press
+                if page_no == 4:
+                    # On Page 4, use Long Press to adjust Gain
+                    print("Automatically adjusting gain...")
+                    os.system("sudo autogain1090") 
+                    print("Done!")
+
+                else:
+                    # On all other pages, reset page to 0, without screen refresh
+                    page_no = 0 
                 return 
             
             page_no = page_no + 1
             
+            # If GPS is not used, skip GPS page
+            if not use_gps and page_no == 3:
+                page_no = page_no + 1
+
+            # If page is larger than maximum number of pages, reset to 0
             if page_no > page_max:
                 page_no = 0
                 clearscreen_event.set()
         
-            print("Page: " + str(page_no))   
-
         else:
             # Rising Edge
-            print("Button " + str(channel) + " pressed!")
             page_timer = time.time()
 
         return
@@ -363,20 +379,22 @@ def real_cb(channel):
 GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-cb1 = ButtonHandler(3, real_cb, edge='falling', bouncetime=10)
+cb1 = ButtonHandler(3, real_cb, edge='falling', bouncetime=10)      # For the shutdown button, only trigger on falling edge
 cb1.start()
 
-cb2 = ButtonHandler(4, real_cb, edge='both', bouncetime=10)
+cb2 = ButtonHandler(4, real_cb, edge='both', bouncetime=10)         # For the function button, trigger on both edges - for timing functionality
 cb2.start()
 
 GPIO.add_event_detect(3, GPIO.BOTH, callback=cb1)
 GPIO.add_event_detect(4, GPIO.BOTH, callback=cb2)
 
+t1 = threading.Thread(target=task1)
+t1.start()
 
 print("Starting schedules...")
 #schedule.every().day.at("00:05").do(Clear)
-schedule.every(1).seconds.do(task1())
+#schedule.every(1).seconds.do(task1())
 
 while True:
-    schedule.run_pending()
+    #schedule.run_pending()
     time.sleep(0.1)
