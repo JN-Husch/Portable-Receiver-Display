@@ -1,9 +1,12 @@
+#
+# Data loading from aircraf.json
+#
+
+import json
+import Classes
+
 from contextlib import closing
 from urllib.request import Request, urlopen
-import json
-import math
-import VectorCalc
-import Classes
 
 
 def fetchADSBData(url):
@@ -69,3 +72,15 @@ def fetchADSBData(url):
     return tgts
 
 
+def getGain():
+    try:
+        with open('/etc/default/readsb') as f:
+            lines = f.readlines()
+            matching = [s for s in lines if "--gain" in s]
+            if len(matching) > 0:
+                line = matching[0]
+                gain_index = line.find('--gain') + 7
+                line = line[gain_index:gain_index + 8].split(" -")[0]
+                return line
+    except:
+        return "Error"

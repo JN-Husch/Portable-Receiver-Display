@@ -1,3 +1,7 @@
+#
+# Main Program Loop
+#
+
 import threading
 import time
 import DataFetcher
@@ -15,88 +19,90 @@ from datetime import datetime, timedelta
 from PIL import Image,ImageDraw,ImageFont
 from waveshare_epd import epd2in9_V2
 
-from gps3 import gps3
-gps_socket = gps3.GPSDSocket()
-data_stream = gps3.DataStream()
-gps_socket.connect()
-gps_socket.watch()
+
+####################################################################################
+#
+# ---------------------- USER ADJUSTABLE SETTINGS BELOW ----------------------------
+#
+####################################################################################
+
+url = "http://127.0.0.1/tar1090/data/aircraft.json" # Path to aircraft.json
+delay_data = 1                                  # Refresh rate for data in seconds
+
+# Home Position (used if there is no GPS module or no GPS Signal)
+home_pos = Classes.Position3D()
+home_pos.lat = 0                    # Home Latitude
+home_pos.lng = 0                    # Home Longitude
+home_pos.alt = 0                    # Home Altitude in m
+
+use_gps = False                      # Variable if a GPS receiver is available
+
+####################################################################################
+#
+# ---------------------- END OF USER ADJUSTABLE SETTINGS ---------------------------
+#
+####################################################################################
+
+# Page Setup
+page_no = 0                         # Active Page Number
+page_max = 4                        # Total Count of available Pages (starting at 0)
+page_timer = 0                      # Variable for return to page 0 function
 
 
-page_no = 3
-page_max = 4
+# Receiver Position
+rec_pos = Classes.Position3D()
 
+# GPS Position
+gps_pos = Classes.Position3D()
 
-epd = epd2in9_V2.EPD()
-epd.init()
-epd.Clear(0xFF)
-
-#img = Drawer.CreateNew(epd.width,epd.height)
-img = Drawer.CreateNew(128,296)
-img_new = img.rotate(90, expand=True)
-
-
-epd.display_Base(epd.getbuffer(img_new))
-
-delay_data = 2
-
-url = "http://127.0.0.1/tar1090/data/aircraft.json"
-
-#Kloten
-home = Classes.HomePosition()
-home.lat = 47.4448839
-home.lng = 8.58839802
-home.alt = 495
-
+# Stats
 tgts_daily = []
 msgs_prev = 0
 rate_avg = 0
 
-#gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
+# Variables
+sat_cnt = 0                         # Used GPS Satellite Count
+sat_cnt_tot = 0                     # Total GPS Satellite Count
+sat_time = 0                        # Time from GPS
 
-sat_cnt = 0
-sat_cnt_tot = 0
-lat = 0
-lng = 0
-alt = 0
-sat_time = 0
+flash = False                       # Flash Variable used for flashing activity corner
+shutting_down = False               # Flag for Shutdown process initiated
 
+# Events for Threading
 shutdown_event = threading.Event()
 clearscreen_event = threading.Event()
 
+###################################################
+# Begin of Program Initialization
+###################################################
 
-def getPositionData2():
-    global gpsd
-    global lat
-    global lng
-    global alt
-    global sat_cnt
-    global sat_cnt_tot
-    global sat_time
+# GPS Initialization
+if use_gps:
+    from gps3 import gps3
+    gps_socket = gps3.GPSDSocket()
+    data_stream = gps3.DataStream()
+    gps_socket.connect()
+    gps_socket.watch()
+else:
+    rec_pos = home_pos
 
-    gpsd.read()
-    gpsd.read()
-    gpsd.read()
 
-    lat = gpsd.fix.latitude
-    lng = gpsd.fix.longitude
-    alt = gpsd.fix.altitude
-    sat_cnt = gpsd.satellites_used
-    sat_cnt_tot = len(gpsd.satellites)
-    gps_time = gpsd.utc
-    
+# E-Ink Display Initalization
+epd = epd2in9_V2.EPD()
+epd.init()
+epd.Clear(0xFF)
 
-    date = 0
-    sat_time = 0
+img = Drawer.CreateNew(epd.width,epd.height)    # Creating a empty image (128x296)
+img_new = img.rotate(90, expand=True)           # Rotating empty image for vertical screen orientation
 
-    if(gps_time is not None and len(gps_time) > 10):
-        date = parser.parse(gps_time)
-        sat_time = date.strftime("%H:%M:%S") + "Z"
+epd.display_Base(epd.getbuffer(img_new))        # Display empty image on E-Ink Display
+
 
 def getPositionData():
     global gpsd
-    global lat
-    global lng
-    global alt
+    global rec_pos
+    global home_pos
+    global gps_pos
     global sat_cnt
     global sat_cnt_tot
     global sat_time
@@ -110,15 +116,34 @@ def getPositionData():
             lng_s = data_stream.TPV['lon']
             alt_s = data_stream.TPV['alt']
 
+            gps_pos = Classes.Position3D()
+
             if lat_s is not None and lat_s != "n/a":
-                lat = float(data_stream.TPV['lat'])
-            
+                gps_pos.lat = float(data_stream.TPV['lat'])
+
             if lng_s is not None and lng_s != "n/a":
-                lng = float(data_stream.TPV['lon'])
+                gps_pos.lng = float(data_stream.TPV['lon'])
             
             if alt_s is not None and alt_s != "n/a":
-                alt = float(data_stream.TPV['alt'])
+                gps_pos.alt = float(data_stream.TPV['alt'])
 
+            # Find out if GPS Position is available
+            if gps_pos.lat != -999 and gps_pos.lng != -999:
+                # 2D Position available
+                rec_pos.lat = gps_pos.lat
+                rec_pos.lng = gps_pos.lng
+                
+                if gps_pos.alt != -999:
+                    # 3D Postion available
+                    rec_pos.alt = gps_pos.alt
+                else:
+                    # 2D Postion only - set altitude to 0m
+                    rec_pos.alt = 0
+            else:
+                # No GPS Position available, set receiver position to home position
+                rec_pos = home_pos
+
+            # Get Time and Date from GPS
             gps_time = data_stream.TPV['time']
             date = 0
             sat_time = 0
@@ -127,6 +152,7 @@ def getPositionData():
                 date = parser.parse(gps_time)
                 sat_time = date.strftime("%H:%M:%S") + "Z"
 
+            # Get a List of GPS Sats and count the used vs total numbers
             sats =  data_stream.SKY['satellites']
 
             sat_cnt = 0
@@ -140,10 +166,8 @@ def getPositionData():
 
                 if sat['used']:
                     sat_cnt = sat_cnt + 1
-            #print(str(sat_cnt) + "/" + str(sat_cnt_tot))
-            return
 
-flash = False
+            return
 
 def DataProcessing():
     global tgts
@@ -151,15 +175,14 @@ def DataProcessing():
     global tgts_daily
     global rate_avg
     global flash
-    global lat
-    global lng
-    global alt
+    global rec_pos
+    global gps_pos
     global sat_cnt
     global sat_cnt_tot
-
-    getPositionData()
-
     global sat_time
+
+    if use_gps:
+        getPositionData()
 
     tgts = DataFetcher.fetchADSBData(url)  
 
@@ -167,7 +190,7 @@ def DataProcessing():
         return
 
     for tgt in tgts:
-        tgt.dis = VectorCalc.AngleCalc(tgt.alt,tgt.lat,tgt.lng,home)[0]
+        tgt.dis = VectorCalc.AngleCalc(tgt.alt,tgt.lat,tgt.lng,rec_pos)[0]
 
 
         if(tgt.hex not in tgts_daily):
@@ -205,54 +228,21 @@ def DataProcessing():
 
     img = Drawer.CreateRectangle(img,0,272,128,1)
 
+    # Select which page to draw
     if page_no == 0:
-        img = Pages.Page0(img,tgts,rate_avg,tgts_daily)
-        img = Drawer.CreateRectangle(img,5,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1").format(a = page_no, b = page_max),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,33,275,("2").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-
+        img = Pages.Page0(img,tgts_far,rate_avg,tgts_daily)
     elif page_no == 1:
         img = Pages.Page1(img,tgts_close)
-        img = Drawer.CreateRectangle(img,30,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2").format(a = page_no, b = page_max),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,58,275,("3").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-
     elif page_no == 2:
         img = Pages.Page2(img,tgts_far)
-        img = Drawer.CreateRectangle(img,55,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3").format(a = page_no, b = page_max),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,83,275,("4").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-
     elif page_no == 3:
-        img = Pages.Page3(img,lat,lng,alt,sat_cnt,sat_cnt_tot,sat_time)
-        img = Drawer.CreateRectangle(img,80,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4").format(a = page_no, b = page_max),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,108,275,("5").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-
+        img = Pages.Page3(img,gps_pos,sat_cnt,sat_cnt_tot,sat_time)
     elif page_no == 4:
         img = Pages.Page4(img)
-        img = Drawer.CreateRectangle(img,105,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4").format(a = page_no, b = page_max),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5").format(a = page_no, b = page_max),font="ArialBold.ttf",sze=18,col="#FFFFFF")
 
-    img_new = img.rotate(90, expand=True)
-
-    epd.display_Partial(epd.getbuffer(img_new))
+    img = Pages.PageSelector(img,page_no, use_gps)               # Draw Page Selector at the bottom
+    img_new = img.rotate(90, expand=True)               # Rotate image to fit vertical screen
+    epd.display_Partial(epd.getbuffer(img_new))         # Do a partial update of E-Ink Display
 
 
 def ClearScreen():
@@ -262,42 +252,54 @@ def ClearScreen():
     epd.Clear(0xFF)
     time.sleep(1)
 
+# Main Task
 def task1():
-    #time_last_data = time.time() - delay_data
+    # Main Loop triggered every second
+    time_last_data = time.time() - delay_data
 
     while not shutdown_event.is_set():
+        # Hold Thread in program loop
         now = time.time()
 
-        if clearscreen_event.is_set():
-            ClearScreen()
-            clearscreen_event.clear()
-
-        if True or (time_last_data + delay_data) < now:
+        if(time_last_data + delay_data) < now:
             time_last_data = now
 
-            DataProcessing()
+        if clearscreen_event.is_set():      # Clear Screen event does a clear screen
+            ClearScreen()
+            clearscreen_event.clear()       # Reset Clear Screen event
 
+        DataProcessing()
+
+    ###################################################
+    # Shutdown Routine:
+    ###################################################
+        
     print("Shutting down...")
 
+    # Display Shutdown image on E-Ink Display:
     img = Drawer.CreateNew(128,296)
     img = Drawer.ShutdownImage(img)
     img_new = img.rotate(90, expand=True)
-
     epd.display(epd.getbuffer(img_new))
 
     time.sleep(3)
-    ClearScreen()
+    ClearScreen()                           # Clearing the screen before commencing shutdown
     time.sleep(1)
-    os.system("sudo shutdown now -h") 
+    os.system("sudo shutdown now -h")       # Sending the shutdown command to the OS
 
-#t1 = threading.Thread(target=task1)
+# Optional Task to automatically adjust gain every 2 minutes - Currently not called
+def task2():
+    print("Automatically adjusting gain...")
+    os.system("sudo autogain1090") 
+    print("Done!")
 
-
+# Clear Stats
 def Clear():
     global tgts_daily
     tgts_daily.clear()
     tgts_daily = []
 
+# Custom function to debounce hardware buttons
 class ButtonHandler(threading.Thread):
     def __init__(self, pin, func, edge='both', bouncetime=200):
         super().__init__(daemon=True)
@@ -331,69 +333,75 @@ class ButtonHandler(threading.Thread):
         self.lastpinval = pinval
         self.lock.release()
 
-page_timer = 0
-
+# Target for debounced button fuctionality
 def real_cb(channel):
     global page_no
     global page_timer
 
     if channel == 3:
-        #PowerButton
+        # PowerButton
+
         print("Button " + str(channel) + " pressed!")
         shutdown_event.set()
         return
     
     if channel == 4:
-        #Function Button
-        #clearscreen_event.set()
-        #print("Automatically adjusting gain...")
-        #os.system("sudo autogain1090") 
-        #print("Done!")
+        # Function Button
 
         if GPIO.input(4):
-            #falling
-            print("Button " + str(channel) + " released!")
+            # Falling Edge
             
             if time.time() - page_timer > 0.5:
-                page_no = 0 
+                # Detect Long press
+                if page_no == 4:
+                    # On Page 4, use Long Press to adjust Gain
+                    print("Automatically adjusting gain...")
+                    os.system("sudo autogain1090") 
+                    print("Done!")
+
+                else:
+                    # On all other pages, reset page to 0, without screen refresh
+                    page_no = 0 
                 return 
             
             page_no = page_no + 1
             
+            # If GPS is not used, skip GPS page
+            if not use_gps and page_no == 3:
+                page_no = page_no + 1
+
+            # If page is larger than maximum number of pages, reset to 0
             if page_no > page_max:
                 page_no = 0
                 clearscreen_event.set()
         
-            print("Page: " + str(page_no))   
-
         else:
-            #rising
-            print("Button " + str(channel) + " pressed!")
+            # Rising Edge
             page_timer = time.time()
 
         return
     
     
-
+# GPIO Setup
 GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-cb1 = ButtonHandler(3, real_cb, edge='falling', bouncetime=10)
+cb1 = ButtonHandler(3, real_cb, edge='falling', bouncetime=10)      # For the shutdown button, only trigger on falling edge
 cb1.start()
 
-cb2 = ButtonHandler(4, real_cb, edge='both', bouncetime=10)
+cb2 = ButtonHandler(4, real_cb, edge='both', bouncetime=10)         # For the function button, trigger on both edges - for timing functionality
 cb2.start()
-
 
 GPIO.add_event_detect(3, GPIO.BOTH, callback=cb1)
 GPIO.add_event_detect(4, GPIO.BOTH, callback=cb2)
 
+t1 = threading.Thread(target=task1)
+t1.start()
+
 print("Starting schedules...")
 #schedule.every().day.at("00:05").do(Clear)
-schedule.every(1).seconds.do(task1())
-#schedule.every(1).seconds.do(getPositionData(gpsd))
+#schedule.every(2).minutes.do(task2)
 
 while True:
     schedule.run_pending()
-    #getPositionData(gpsd)
     time.sleep(0.1)
