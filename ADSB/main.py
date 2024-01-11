@@ -177,11 +177,10 @@ def DataProcessing():
     global rec_pos
     global sat_cnt
     global sat_cnt_tot
+    global sat_time
 
     if use_gps:
         getPositionData()
-
-    global sat_time
 
     tgts = DataFetcher.fetchADSBData(url)  
 
@@ -239,7 +238,7 @@ def DataProcessing():
     elif page_no == 4:
         img = Pages.Page4(img)
 
-    img = Pages.PageSelector(img,page_no)               # Draw Page Selector at the bottom
+    img = Pages.PageSelector(img,page_no, use_gps)               # Draw Page Selector at the bottom
     img_new = img.rotate(90, expand=True)               # Rotate image to fit vertical screen
     epd.display_Partial(epd.getbuffer(img_new))         # Do a partial update of E-Ink Display
 

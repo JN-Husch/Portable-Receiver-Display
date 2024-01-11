@@ -125,44 +125,43 @@ def Page5(img):
 
     return img
 
-def PageSelector(img,page_no):
+def PageSelector(img,page_no, use_gps):
     if page_no == 0:
         img = Drawer.CreateRectangle(img,5,275,15,19)
         img = Drawer.CreateText(img,8,275,("1"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+    else:
+        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
 
-    elif page_no == 1:
+    if page_no == 1:
         img = Drawer.CreateRectangle(img,30,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
         img = Drawer.CreateText(img,33,275,("2"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+    else:
+        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
 
-    elif page_no == 2:
+    if page_no == 2:
         img = Drawer.CreateRectangle(img,55,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
         img = Drawer.CreateText(img,58,275,("3"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+    else:
+        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
 
-    elif page_no == 3:
+    if page_no == 3:
         img = Drawer.CreateRectangle(img,80,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
-        img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
-
-    elif page_no == 4:
+        if use_gps:
+            img = Drawer.CreateText(img,83,275,("4"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+    else:
+        if use_gps:
+            img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)    
+    
+    if page_no == 4:
         img = Drawer.CreateRectangle(img,105,275,15,19)
-        img = Drawer.CreateText(img,8,275,("1"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,33,275,("2"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,58,275,("3"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,83,275,("4"),font="Arial.ttf",sze=18)
-        img = Drawer.CreateText(img,108,275,("5"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        if use_gps:
+            img = Drawer.CreateText(img,108,275,("5"),font="ArialBold.ttf",sze=18,col="#FFFFFF")
+        else:
+            img = Drawer.CreateText(img,108,275,("4"),font="ArialBold.ttf",sze=18,col="#FFFFFF")        
+    else:
+        if use_gps:
+            img = Drawer.CreateText(img,108,275,("5"),font="Arial.ttf",sze=18)
+        else:
+            img = Drawer.CreateText(img,108,275,("4"),font="Arial.ttf",sze=18)
+
     return img
