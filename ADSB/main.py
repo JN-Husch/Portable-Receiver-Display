@@ -98,77 +98,6 @@ img_new = img.rotate(90, expand=True)           # Rotating empty image for verti
 epd.display_Base(epd.getbuffer(img_new))        # Display empty image on E-Ink Display
 
 
-def getPositionData():
-    global gpsd
-    global rec_pos
-    global home_pos
-    global gps_pos
-    global sat_cnt
-    global sat_cnt_tot
-    global sat_time
-
-    sats = []
-
-    for new_data in gps_socket:
-        if new_data:
-            data_stream.unpack(new_data)
-            lat_s = data_stream.TPV['lat']
-            lng_s = data_stream.TPV['lon']
-            alt_s = data_stream.TPV['alt']
-
-            gps_pos = Classes.Position3D()
-
-            if lat_s is not None and lat_s != "n/a":
-                gps_pos.lat = float(data_stream.TPV['lat'])
-
-            if lng_s is not None and lng_s != "n/a":
-                gps_pos.lng = float(data_stream.TPV['lon'])
-            
-            if alt_s is not None and alt_s != "n/a":
-                gps_pos.alt = float(data_stream.TPV['alt'])
-
-            # Find out if GPS Position is available
-            if gps_pos.lat != -999 and gps_pos.lng != -999:
-                # 2D Position available
-                rec_pos.lat = gps_pos.lat
-                rec_pos.lng = gps_pos.lng
-                
-                if gps_pos.alt != -999:
-                    # 3D Postion available
-                    rec_pos.alt = gps_pos.alt
-                else:
-                    # 2D Postion only - set altitude to 0m
-                    rec_pos.alt = 0
-            else:
-                # No GPS Position available, set receiver position to home position
-                rec_pos = home_pos
-
-            # Get Time and Date from GPS
-            gps_time = data_stream.TPV['time']
-            date = 0
-            sat_time = 0
-
-            if(gps_time is not None and len(gps_time) > 10):
-                date = parser.parse(gps_time)
-                sat_time = date.strftime("%H:%M:%S") + "Z"
-
-            # Get a List of GPS Sats and count the used vs total numbers
-            sats =  data_stream.SKY['satellites']
-
-            sat_cnt = 0
-            sat_cnt_tot = 0
-
-            if sats == "n/a":
-                return
-
-            for sat in sats:
-                sat_cnt_tot = sat_cnt_tot + 1
-
-                if sat['used']:
-                    sat_cnt = sat_cnt + 1
-
-            return
-
 def DataProcessing():
     global tgts
     global msgs_prev
@@ -182,8 +111,8 @@ def DataProcessing():
     global sat_time
     global adjusting_gain
 
-    if use_gps:
-        getPositionData()
+    #if use_gps:
+    #    getPositionData()
 
     tgts = DataFetcher.fetchADSBData(url)  
 
@@ -253,7 +182,7 @@ def ClearScreen():
     epd.Clear(0xFF)
     time.sleep(1)
 
-# Main Task
+# Main Task for Data Processing
 def task1():
     # Main Loop triggered every second
     time_last_data = time.time() - delay_data
@@ -288,8 +217,14 @@ def task1():
     time.sleep(1)
     os.system("sudo shutdown now -h")       # Sending the shutdown command to the OS
 
-# Optional Task to automatically adjust gain every 2 minutes - Currently not called
+# Secondary Task for GPS Interface
 def task2():
+    while not shutdown_event.is_set():
+        getPositionData()
+        time.sleep(0.1)
+
+# Optional Task to automatically adjust gain every 2 minutes - Currently not called
+def task3():
     print("Automatically adjusting gain...")
     os.system("sudo autogain1090") 
     print("Done!")
@@ -299,6 +234,76 @@ def Clear():
     global tgts_daily
     tgts_daily.clear()
     tgts_daily = []
+
+def getPositionData():
+    global rec_pos
+    global home_pos
+    global gps_pos
+    global sat_cnt
+    global sat_cnt_tot
+    global sat_time
+
+    sats = []
+
+    for new_data in gps_socket:
+        if new_data:
+            data_stream.unpack(new_data)
+            lat_s = data_stream.TPV['lat']
+            lng_s = data_stream.TPV['lon']
+            alt_s = data_stream.TPV['alt']
+
+            gps_pos = Classes.Position3D()
+
+            if lat_s is not None and lat_s != "n/a":
+                gps_pos.lat = float(data_stream.TPV['lat'])
+
+            if lng_s is not None and lng_s != "n/a":
+                gps_pos.lng = float(data_stream.TPV['lon'])
+            
+            if alt_s is not None and alt_s != "n/a":
+                gps_pos.alt = float(data_stream.TPV['alt'])
+
+            # Find out if GPS Position is available
+            if gps_pos.lat != -999 and gps_pos.lng != -999:
+                # 2D Position available
+                rec_pos.lat = gps_pos.lat
+                rec_pos.lng = gps_pos.lng
+                
+                if gps_pos.alt != -999:
+                    # 3D Postion available
+                    rec_pos.alt = gps_pos.alt
+                else:
+                    # 2D Postion only - set altitude to 0m
+                    rec_pos.alt = 0
+            else:
+                # No GPS Position available, set receiver position to home position
+                rec_pos = home_pos
+
+            # Get Time and Date from GPS
+            gps_time = data_stream.TPV['time']
+            date = 0
+            sat_time = 0
+
+            if(gps_time is not None and len(gps_time) > 10):
+                date = parser.parse(gps_time)
+                sat_time = date.strftime("%H:%M:%S") + "Z"
+
+            # Get a List of GPS Sats and count the used vs total numbers
+            sats =  data_stream.SKY['satellites']
+
+            sat_cnt = 0
+            sat_cnt_tot = 0
+
+            if sats == "n/a":
+                break
+
+            for sat in sats:
+                sat_cnt_tot = sat_cnt_tot + 1
+
+                if sat['used']:
+                    sat_cnt = sat_cnt + 1
+
+            #return
 
 # Custom function to debounce hardware buttons
 class ButtonHandler(threading.Thread):
@@ -395,8 +400,14 @@ cb2.start()
 GPIO.add_event_detect(3, GPIO.BOTH, callback=cb1)
 GPIO.add_event_detect(4, GPIO.BOTH, callback=cb2)
 
+#t1 - Main Thread for data processing
 t1 = threading.Thread(target=task1)
 t1.start()
+
+#t2 - Secondary Thread for GPS interface
+if use_gps:
+    t2 = threading.Thread(target=task2)
+    t2.start()
 
 print("Starting schedules...")
 #schedule.every().day.at("00:05").do(Clear)
