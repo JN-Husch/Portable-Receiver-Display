@@ -13,6 +13,7 @@ import operator
 import schedule
 import os
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+import json
 
 from dateutil import parser
 from datetime import datetime, timedelta
@@ -64,6 +65,7 @@ rate_avg = 0
 sat_cnt = 0                         # Used GPS Satellite Count
 sat_cnt_tot = 0                     # Total GPS Satellite Count
 sat_time = 0                        # Time from GPS
+sat_gdop = 0                        # GDOP (3D + Time Accuracy) from GPS
 
 flash = False                       # Flash Variable used for flashing activity corner
 adjusting_gain = False              # Flag for Gain Adjust Process Initiated
@@ -166,7 +168,7 @@ def DataProcessing():
     elif page_no == 2:
         img = Pages.Page2(img,tgts_far)
     elif page_no == 3:
-        img = Pages.Page3(img,gps_pos,sat_cnt,sat_cnt_tot,sat_time)
+        img = Pages.Page3(img,gps_pos,sat_cnt,sat_cnt_tot,sat_time,sat_gdop)
     elif page_no == 4:
         img = Pages.Page4(img,adjusting_gain)
 
@@ -242,6 +244,7 @@ def getPositionData():
     global sat_cnt
     global sat_cnt_tot
     global sat_time
+    global sat_gdop
 
     sats = []
 
@@ -287,6 +290,8 @@ def getPositionData():
             if(gps_time is not None and len(gps_time) > 10):
                 date = parser.parse(gps_time)
                 sat_time = date.strftime("%H:%M:%S") + "Z"
+
+            sat_gdop = data_stream.SKY['gdop']
 
             # Get a List of GPS Sats and count the used vs total numbers
             sats =  data_stream.SKY['satellites']

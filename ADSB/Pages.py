@@ -80,7 +80,7 @@ def Page2(img,tgts):
 # GPS Information
 ###################################################
 
-def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
+def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time,sat_gdop):
     img = Drawer.CreateText(img,10,5,"GPS",font="ArialBold.ttf",sze=font_large)
 
     lat_s = "No 2D Fix"
@@ -110,6 +110,9 @@ def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time):
 
     img = Drawer.CreateText(img,10,170,"Sats:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,190,str(sat_cnt) + "/" + str(sat_cnt_tot),font="ArialBold.ttf",sze=font_small)
+    
+    img = Drawer.CreateText(img,67.5,170,"GDOP:",font="Arial.ttf",sze=18)
+    img = Drawer.CreateText(img,75,190,str(sat_gdop),font="ArialBold.ttf",sze=font_small)
 
     img = Drawer.CreateText(img,10,215,"Time:",font="Arial.ttf",sze=font_large)
     img = Drawer.CreateText(img,10,235,str(time),font="ArialBold.ttf",sze=font_small)
