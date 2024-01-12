@@ -2,7 +2,7 @@
 
 Pyhton software for a portable ADS-B (and later VDL2 and ACARS) receiver intended to run on a Raspberry Pi.
 
-![Image of a portable receiver](images/img1.jpg)
+![Image of a portable receiver](images/img1.jpeg)
 
 # Hardware Suggestions
 
