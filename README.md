@@ -123,7 +123,7 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 9. To automatically start the PRD Software on Pi boot, follow these three steps:
 
-		sudo cp PRDS-ADSB.service /etc/systemd/system
+		sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRDS-ADSB.service
 		sudo systemctl start PRDS-ADSB.service
 
