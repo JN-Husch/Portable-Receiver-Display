@@ -105,9 +105,23 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 		sudo reboot
 
 
-7. Copy the contents of the ADSB folder to your Pi, by running the following 4 commands:
+7. Copy the contents of the ADSB folder to your Pi, by running the following 5 commands:
 
 		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRS
 		cd PRS
 		git sparse-checkout set ADSB
 		git checkout
+		cd ADSB
+
+
+8. You can now test your setup, by starting the Portable-Receiver-Software manually:
+
+  		python3 main.py
+
+By pressing "Left Ctrl + C" several times, you can exit from the Portable-Receiver-Software.
+
+9. To automatically start the Portable-Receiver-Software on Pi boot, follow these three steps:
+
+		cp PRS-ADSB.service /etc/systemd/system
+		sudo systemctl enable PRS-ADSB.service
+		sudo systemctl start PRS-ADSB.service
