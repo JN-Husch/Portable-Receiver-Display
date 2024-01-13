@@ -139,7 +139,7 @@ To stop and remove the Portable-Receiver-Software, follow these steps:
 
 3. Remove the PRS-ADSB.service file:
 
-		cd systemd/system
+		cd /etc/systemd/system
    		sudo rm -r PRS-ADSB.service
 
 5. Remove the installation files:
