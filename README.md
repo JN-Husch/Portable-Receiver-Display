@@ -105,8 +105,9 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 		sudo reboot
 
 
-7. Copy the contents of the ADSB folder to your Pi, by running the following 5 commands:
+7. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
 
+		cd /home/pi
 		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRS
 		cd PRS
 		git sparse-checkout set ADSB
@@ -118,10 +119,31 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
   		python3 main.py
 
-By pressing "Left Ctrl + C" several times, you can exit from the Portable-Receiver-Software.
+	By pressing "Left Ctrl + C" several times, you can exit from the Portable-Receiver-Software.
 
 9. To automatically start the Portable-Receiver-Software on Pi boot, follow these three steps:
 
 		sudo cp PRS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRS-ADSB.service
 		sudo systemctl start PRS-ADSB.service
+
+## Software De-Installation
+To stop and remove the Portable-Receiver-Software, follow these steps:
+
+1. Connect to your Pi via SSH, and run the following commands.
+
+2. Stop & Disable the PRS-ADSB.service:
+
+   		sudo systemctl stop PRS-ADSB.service
+   		sudo systemctl disable PRS-ADSB.service
+
+3. Remove the PRS-ADSB.service file:
+
+		cd systemd/system
+   		sudo rm -r PRS-ADSB.service
+
+5. Remove the installation files:
+
+  		cd /home/pi
+   		sudo rm -r PRS
+
