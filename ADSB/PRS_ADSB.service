@@ -1,13 +1,13 @@
 [Unit]
-Description=Display ADSB SERVICE
+Description=PRS - ADSB SERVICE
 After=multi-user.target
 
 [Service]
 Type=idle  
-ExecStart=/usr/bin/python3 /home/pi/adsb/main.py
+ExecStart=/usr/bin/python3 /home/pi/PRS/ADSB/main.py
 Restart=always
 RestartSec=20
-WorkingDirectory=/home/pi/adsb/
+WorkingDirectory=/home/pi/PRS/ADSB/
 
 
 [Install]  
