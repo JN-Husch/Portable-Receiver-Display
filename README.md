@@ -1,6 +1,6 @@
 # Portable Receiver Display Software
 
-Pyhton software for a portable ADS-B (and later VDL2 and ACARS) receiver intended to run on a Raspberry Pi.
+The Portable Receiver Display Software, or PRDS, is a Python software for a mobile ADS-B (and later VDL2 and ACARS) receiver intended to run on a Raspberry Pi. It uses a E-Ink display and an optional GPS module to display useful stats.
 
 ![Image of a portable receiver](images/img1.jpeg)
 
@@ -108,42 +108,59 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 7. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
 
 		cd /home/pi
-		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRS
-		cd PRS
+		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
+		cd PRDS
 		git sparse-checkout set ADSB
 		git checkout
 		cd ADSB
 
 
-8. You can now test your setup, by starting the Portable-Receiver-Software manually:
+8. You can now test your setup, by starting the PRD Software manually:
 
   		python3 main.py
 
-	By pressing "Left Ctrl + C" several times, you can exit from the Portable-Receiver-Software.
+	By pressing "Left Ctrl + C" several times, you can exit from the Portable Receiver Display Software.
 
-9. To automatically start the Portable-Receiver-Software on Pi boot, follow these three steps:
+9. To automatically start the PRD Software on Pi boot, follow these three steps:
 
-		sudo cp PRS-ADSB.service /etc/systemd/system
-		sudo systemctl enable PRS-ADSB.service
-		sudo systemctl start PRS-ADSB.service
+		sudo cp PRDS-ADSB.service /etc/systemd/system
+		sudo systemctl enable PRDS-ADSB.service
+		sudo systemctl start PRDS-ADSB.service
 
-## Software De-Installation
-To stop and remove the Portable-Receiver-Software, follow these steps:
+## Software Update
+
+To update the PRD Software, follow these steps:
+
+1. Connect to your Pi via SSH.
+
+2. Run the following commands:
+
+		cd /home/pi
+		sudo rm -r PRDS
+		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
+		cd PRDS
+		git sparse-checkout set ADSB
+		git checkout
+		sudo systemctl restart PRDS-ADSB.service
+
+## Software Removal
+
+To stop and remove the PRD Software, follow these steps:
 
 1. Connect to your Pi via SSH, and run the following commands.
 
-2. Stop & Disable the PRS-ADSB.service:
+2. Stop & Disable the PRDS-ADSB.service:
 
-   		sudo systemctl stop PRS-ADSB.service
-   		sudo systemctl disable PRS-ADSB.service
+   		sudo systemctl stop PRDS-ADSB.service
+   		sudo systemctl disable PRDS-ADSB.service
 
-3. Remove the PRS-ADSB.service file:
+3. Remove the PRDS-ADSB.service file:
 
 		cd /etc/systemd/system
-   		sudo rm -r PRS-ADSB.service
+   		sudo rm -r PRDS-ADSB.service
 
 5. Remove the installation files:
 
   		cd /home/pi
-   		sudo rm -r PRS
+   		sudo rm -r PRDS
 
