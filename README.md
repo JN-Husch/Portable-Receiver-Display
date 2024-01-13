@@ -122,6 +122,6 @@ By pressing "Left Ctrl + C" several times, you can exit from the Portable-Receiv
 
 9. To automatically start the Portable-Receiver-Software on Pi boot, follow these three steps:
 
-		cp PRS-ADSB.service /etc/systemd/system
+		sudo cp PRS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRS-ADSB.service
 		sudo systemctl start PRS-ADSB.service
