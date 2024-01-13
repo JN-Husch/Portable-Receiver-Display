@@ -103,4 +103,11 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 6. Reboot your Pi by running:
 
 		sudo reboot
-     
+
+
+7. Copy the contents of the ADSB folder to your Pi, by running the following 4 commands:
+
+		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRS
+		cd PRS
+		git sparse-checkout set ADSB
+		git checkout
