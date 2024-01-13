@@ -22,7 +22,16 @@ The harware below was used for the development build of the portable receiver. O
 
 ## Wiring Guide
 
-_Work in Progress, please check again later!_
+1. Connect the switch and the optional wiring diagramm as shown here:
+
+![Wiring Diagramm](images/wiring.png)
+_The GPS receiver is opptional, but highly recommended!_
+
+2. Connect the E-Ink display as explained here: [WaveShare Wiki](https://www.waveshare.com/wiki/2.9inch_e-Paper_Module_Manual#Working_With_Raspberry_Pi)
+
+3. Connect the SDR to a free USB port with the USB-A extension cable.
+
+4. Connect the USB-C to Micro-USB cable from the USB-C Panel mount to the Raspberry Pi.
 
 ## Software Installation
 
@@ -30,4 +39,5 @@ _Work in Progress, please check again later!_
 
 1. Install Linux Image on Raspberry SD card and boot the Pi.
 2. Install readsb + tar1090 on the Pi.
-3. ...
+3. 
+4. ...
