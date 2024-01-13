@@ -26,7 +26,7 @@ The harware below was used for the development build of the portable receiver. O
 1. Connect the switch and the optional wiring diagramm as shown here:
 
 ![Wiring Diagramm](images/wiring.png)
-_The GPS receiver is opptional, but highly recommended!_
+_The GPS receiver is optional, but highly recommended!_
 
 2. Connect the E-Ink display as explained here: [WaveShare Wiki](https://www.waveshare.com/wiki/2.9inch_e-Paper_Module_Manual#Working_With_Raspberry_Pi)
 
@@ -81,7 +81,7 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 
 
-5. _(optional)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
+5. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
 
    5.1 Run the following command on your Pi:
    
