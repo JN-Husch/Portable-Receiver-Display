@@ -38,6 +38,54 @@ _The GPS receiver is opptional, but highly recommended!_
 _Work in Progress, please check again later!_
 
 1. Install Linux Image on Raspberry SD card and boot the Pi.
-2. Install readsb + tar1090 on the Pi.
-3. 
-4. ...
+
+2. Install readsb + tar1090 on the Pi as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
+  
+3. Connect to your Pi via SSH and run the following commands:
+    3.1 Installation of Pip:
+      ```
+      sudo apt install python3-pip
+      ```
+    3.2 Installation of PIL
+      ```
+      python3 -m pip install --upgrade Pillow
+      ```
+    3.3 Installation of Schedule
+      ```
+      pip install schedule
+      ```
+    3.4 Installation of GPS interfacing software:
+      ```
+      sudo -H pip3 install gps3
+      ```
+
+4. Enable SPI communication for the E-Ink display:
+    4.1 Run the following command on your Pi:
+     ```
+     sudo raspi-config
+     ```
+    4.2 Navigate to:
+     ```
+     Interfacing Options -> SPI
+     ```
+    4.3 Select Yes Enable SPI Interface
+    4.4 Select Finish
+
+6. _(optional)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
+    5.1 Run the following command on your Pi:
+     ```
+     sudo raspi-config
+     ```
+    5.2 Navigate to:
+     ```
+     Interfacing Options -> Serial
+     ```
+    5.3 Select Yes Enable Serial Interface
+    5.4 Select No if you get asked if you want to allow access to the login-shell via serial connection
+    5.5 Select Yes again if you get asked if you want to keep the Serial Interface enabled
+    5.6 Select Finish
+
+7. Reboot your Pi by running:
+     ```
+     sudo reboot
+     ```
