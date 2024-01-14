@@ -20,6 +20,10 @@ The harware below was used for the development build of the portable receiver. O
 
 *The Amazon links are for reference only. Exact product availability and fit may not be guaranteed!
 
+### 3D Printed Parts
+
+The case for the portable receiver has been 3D printed. Files, required hardware and information about the 3D printed case can be on Printables: https://www.printables.com/model/720951-portable-pi-sdr-case
+
 
 ## Wiring Guide
 
