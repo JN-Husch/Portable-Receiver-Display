@@ -64,12 +64,16 @@ Recommended: Raspberry Pi OS Lite (64-bit)
  
 		pip install schedule
 
-   3.4 Installation of GPS interfacing software:
+   3.4 Installation of Dateutil
+ 
+		pip install python-dateutil
+
+   3.5 Installation of GPS interfacing software (optional):
    
 		sudo -H pip3 install gps3
 
 
-4. Enable SPI communication for the E-Ink display
+5. Enable SPI communication for the E-Ink display
 
    4.1 Run the following command on your Pi:
    
@@ -85,7 +89,7 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 
 
-5. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
+6. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
 
    5.1 Run the following command on your Pi:
    
@@ -104,12 +108,12 @@ Recommended: Raspberry Pi OS Lite (64-bit)
    5.6 Select Finish
 
 
-6. Reboot your Pi by running:
+7. Reboot your Pi by running:
 
 		sudo reboot
 
 
-7. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
+8. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
 
 		cd /home/pi
 		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
@@ -119,13 +123,13 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 		cd ADSB
 
 
-8. You can now test your setup, by starting the PRD Software manually:
+9. You can now test your setup, by starting the PRD Software manually:
 
   		python3 main.py
 
 	By pressing "Left Ctrl + C" several times, you can exit from the Portable Receiver Display Software.
 
-9. To automatically start the PRD Software on Pi boot, follow these three steps:
+10. To automatically start the PRD Software on Pi boot, follow these three steps:
 
 		sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRDS-ADSB.service
