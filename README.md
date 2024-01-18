@@ -51,14 +51,18 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 2. Install readsb + tar1090 on the Pi as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 
-3. Run the automatic installation script by running the following command:
+3. (Optional) Install the automatic gain adjustment script, as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-gain-optimization-for-readsb-and-dump1090-fa
+   (This is required if you want the automatic gain adjustment function on Page 5 to work).
+   
+
+5. Run the automatic installation script by running the following command:
 
    		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
-
+ 
 	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
 
-4. Reboot your Pi by running:
+6. Reboot your Pi by running:
 
 		sudo reboot
 
