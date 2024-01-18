@@ -22,8 +22,6 @@ The harware below was used for the development build of the portable receiver. O
 
 *The Amazon links are for reference only. Exact product availability and fit may not be guaranteed!
 
-<br/>
-
 ### 3D Printed Parts
 
 The case for the portable receiver has been 3D printed. Files, required hardware and information about the 3D printed case can be on Printables: https://www.printables.com/model/720951-portable-pi-sdr-case
@@ -55,7 +53,7 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 3. Run the automatic installation script by running the following command:
 
-   		#sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
+   		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
 
 	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
