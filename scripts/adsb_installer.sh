@@ -40,7 +40,6 @@ echo -e "\033[37m"
 # Set up Serial and SPI Communication
 sudo raspi-config nonint do_serial_hw 1 
 sudo raspi-config nonint do_serial_cons 1
-sudo raspi-config nonint do_serial 2
 sudo raspi-config nonint do_spi 0
 
 echo -e "\033[92m"
@@ -86,4 +85,5 @@ echo -e "\033[92m"
 echo "------------------------------------------------"
 echo "Installation complete!"
 echo -e "\033[37m"
-echo "Please re-boot the Pi by running "sudo reboot"
+echo "Please re-boot the Pi by running sudo reboot"
+
