@@ -1,8 +1,10 @@
 # Portable Receiver Display Software
 
-Pyhton software for a portable ADS-B (and later VDL2 and ACARS) receiver intended to run on a Raspberry Pi.
+The Portable Receiver Display Software, or PRDS, is a Python software for a mobile ADS-B (and later VDL2 and ACARS) receiver intended to run on a Raspberry Pi. It uses a E-Ink display and an optional GPS module to display useful stats.
 
 ![Image of a portable receiver](images/img1.jpeg)
+
+<br/>
 
 ## Hardware Suggestions
 
@@ -20,6 +22,13 @@ The harware below was used for the development build of the portable receiver. O
 
 *The Amazon links are for reference only. Exact product availability and fit may not be guaranteed!
 
+<br/>
+
+### 3D Printed Parts
+
+The case for the portable receiver has been 3D printed. Files, required hardware and information about the 3D printed case can be on Printables: https://www.printables.com/model/720951-portable-pi-sdr-case
+
+<br/>
 
 ## Wiring Guide
 
@@ -34,10 +43,9 @@ _The GPS receiver is optional, but highly recommended!_
 
 4. Connect the USB-C to Micro-USB cable from the USB-C Panel mount to the Raspberry Pi.
 
+<br/>
 
 ## Software Installation
-
-_Manual installation follows below, automatic install script will hopefully be available in the future!_
 
 1. Install Linux Image on Raspberry SD card and boot the Pi.
 Recommended: Raspberry Pi OS Lite (64-bit)
@@ -45,69 +53,50 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
 2. Install readsb + tar1090 on the Pi as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 
+3. Run the automatic installation script by running the following command:
 
-3. Connect to your Pi via SSH and run the following commands:
+   		#sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
 
-   3.1 Installation of Pip:
-   
-		sudo apt install python3-pip
-
-   3.2 Installation of PIL
-   
-		python3 -m pip install --upgrade Pillow
-
-   3.3 Installation of Schedule
- 
-		pip install schedule
-
-   3.4 Installation of GPS interfacing software:
-   
-		sudo -H pip3 install gps3
+	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
 
-4. Enable SPI communication for the E-Ink display
-
-   4.1 Run the following command on your Pi:
-   
-		sudo raspi-config
-
-   4.2 Navigate to:
-   
-		Interfacing Options -> SPI
-
-   4.3 Select Yes Enable SPI Interface
-
-   4.4 Select Finish
-
-
-
-5. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
-
-   5.1 Run the following command on your Pi:
-   
-		sudo raspi-config
-
-   5.2 Navigate to:
-   
-		Interfacing Options -> Serial
-
-   5.3 Select Yes Enable Serial Interface
-
-   5.4 Select No if you get asked if you want to allow access to the login-shell via serial connection
-
-   5.5 Select Yes again if you get asked if you want to keep the Serial Interface enabled
-
-   5.6 Select Finish
-
-
-6. Reboot your Pi by running:
+4. Reboot your Pi by running:
 
 		sudo reboot
 
+	After your Pi has re-booted, the display should now automatically start up and show ADSB-Data.
 
-7. Copy the contents of the ADSB folder to your Pi, by running the following 4 commands:
+<br/>
 
-		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRS
-		cd PRS
+## Software Update
+
+To update the PRD Software, follow these steps:
+
+1. Connect to your Pi via SSH.
+
+2. Run the following command:
+
+   		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
+
+	Alternatively, you can also manually update, by running the following commands:
+
+		cd /home/pi
+		sudo rm -r PRDS
+		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
+		cd PRDS
 		git sparse-checkout set ADSB
 		git checkout
+		sudo systemctl restart PRDS-ADSB.service
+<br/>
+
+## Software Removal
+
+To automatically remove the PRD Software follow these steps:
+
+1. Connect to your Pi via SSH.
+
+2. Run the following command:
+
+		sudo bash /home/pi/PRDS/ADSB/uninstall.sh
+
+	Alternatively, you can manually uninstall the PRD Software by following this guide: [docs/manual_uninstallation.md](docs/manual_uninstallation.md)
