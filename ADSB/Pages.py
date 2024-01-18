@@ -125,7 +125,13 @@ def Page3(img,gps_pos: Classes.Position3D,sat_cnt,sat_cnt_tot,time,sat_gdop):
 def Page4(img,gain_adj):
     img = Drawer.CreateText(img,10,5,"Network",font="ArialBold.ttf",sze=font_large)
 
-    wifi = subprocess.check_output(['sudo', 'iwgetid']).decode().split("ESSID:")[1].replace("\"","")
+    wifi = "UNK"
+
+    try:
+        wifi = subprocess.check_output(['sudo', 'iwgetid']).decode().split("ESSID:")[1].replace("\"","")
+    except Exception as error:
+        print("Error whil trying to get wifi")
+        print("Error:", error)
 
     img = Drawer.CreateText(img,10,35,"WiFi:",font="Arial.ttf",sze=font_large)    
     img = Drawer.CreateText(img,10,55,wifi,font="ArialBold.ttf",sze=15)
