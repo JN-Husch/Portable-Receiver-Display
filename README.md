@@ -41,79 +41,25 @@ _The GPS receiver is optional, but highly recommended!_
 
 ## Software Installation
 
-_Manual installation follows below, automatic install script will hopefully be available in the future!_
-
 1. Install Linux Image on Raspberry SD card and boot the Pi.
 Recommended: Raspberry Pi OS Lite (64-bit)
 
 
 2. Install readsb + tar1090 on the Pi as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 
+3. Run the automatic installation script by running the following command:
 
-3. Connect to your Pi via SSH and run the following commands:
+   		#sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
 
-   3.1 Installation of Pip:
-   
-		sudo apt install python3-pip
-
-   3.2 Installation of PIL
-   
-		python3 -m pip install --upgrade Pillow
-
-   3.3 Installation of Schedule
- 
-		pip install schedule
-
-   3.4 Installation of Dateutil
- 
-		pip install python-dateutil
-
-   3.5 Installation of GPS interfacing software (optional):
-   
-		sudo -H pip3 install gps3
+	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
 
-5. Enable SPI communication for the E-Ink display
-
-   4.1 Run the following command on your Pi:
-   
-		sudo raspi-config
-
-   4.2 Navigate to:
-   
-		Interfacing Options -> SPI
-
-   4.3 Select Yes Enable SPI Interface
-
-   4.4 Select Finish
-
-
-
-6. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
-
-   5.1 Run the following command on your Pi:
-   
-		sudo raspi-config
-
-   5.2 Navigate to:
-   
-		Interfacing Options -> Serial
-
-   5.3 Select Yes Enable Serial Interface
-
-   5.4 Select No if you get asked if you want to allow access to the login-shell via serial connection
-
-   5.5 Select Yes again if you get asked if you want to keep the Serial Interface enabled
-
-   5.6 Select Finish
-
-
-7. Reboot your Pi by running:
+4. Reboot your Pi by running:
 
 		sudo reboot
 
 
-8. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
+5. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
 
 		cd /home/pi
 		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
@@ -123,13 +69,13 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 		cd ADSB
 
 
-9. You can now test your setup, by starting the PRD Software manually:
+6. You can now test your setup, by starting the PRD Software manually:
 
   		python3 main.py
 
 	By pressing "Left Ctrl + C" several times, you can exit from the Portable Receiver Display Software.
 
-10. To automatically start the PRD Software on Pi boot, follow these three steps:
+7. To automatically start the PRD Software on Pi boot, follow these three steps:
 
 		sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRDS-ADSB.service
@@ -141,7 +87,11 @@ To update the PRD Software, follow these steps:
 
 1. Connect to your Pi via SSH.
 
-2. Run the following commands:
+2. Run the following command:
+
+   		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
+
+Alternatively, you can also manually update, by running the following commands:
 
 		cd /home/pi
 		sudo rm -r PRDS
@@ -153,22 +103,11 @@ To update the PRD Software, follow these steps:
 
 ## Software Removal
 
-To stop and remove the PRD Software, follow these steps:
+### Automatic Uninstallation
 
-1. Connect to your Pi via SSH, and run the following commands.
 
-2. Stop & Disable the PRDS-ADSB.service:
+### Manual Uninstallation
 
-   		sudo systemctl stop PRDS-ADSB.service
-   		sudo systemctl disable PRDS-ADSB.service
+A guide on how to manually remove the PRD Software can be found here:
 
-3. Remove the PRDS-ADSB.service file:
-
-		cd /etc/systemd/system
-   		sudo rm -r PRDS-ADSB.service
-
-5. Remove the installation files:
-
-  		cd /home/pi
-   		sudo rm -r PRDS
-
+[docs/manual_uninstallation.md](docs/manual_uninstallation.md)
