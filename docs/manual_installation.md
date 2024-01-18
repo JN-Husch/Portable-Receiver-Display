@@ -22,6 +22,7 @@
    
 		sudo -H pip3 install gps3
 
+</br>
 
 2. Enable SPI communication for the E-Ink display
 
@@ -37,7 +38,7 @@
 
    2.4 Select Finish
 
-
+</br>
 
 3. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
 
@@ -56,3 +57,36 @@
    3.5 Select Yes again if you get asked if you want to keep the Serial Interface enabled
 
    3.6 Select Finish
+
+</br>
+
+4. Reboot your Pi by running:
+
+		sudo reboot
+
+</br>
+
+5. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
+
+		cd /home/pi
+		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
+		cd PRDS
+		git sparse-checkout set ADSB
+		git checkout
+		cd ADSB
+
+</br>
+
+6. You can now test your setup, by starting the PRD Software manually:
+
+  		python3 main.py
+
+	By pressing "Left Ctrl + C" several times, you can exit from the Portable Receiver Display Software.
+
+</br>
+
+7. To automatically start the PRD Software on Pi boot, follow these three steps:
+
+		sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
+		sudo systemctl enable PRDS-ADSB.service
+		sudo systemctl start PRDS-ADSB.service
