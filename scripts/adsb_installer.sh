@@ -17,7 +17,8 @@ sudo -H pip3 install gps3 --break-system-packages
 # Set up Serial and SPI Communication
 sudo raspi-config nonint do_serial_hw 1 
 sudo raspi-config nonint do_serial_cons 1
-sudo raspi-config nonint do_spi 1
+sudo raspi-config nonint do_serial 2
+sudo raspi-config nonint do_spi 0
 
 # Remove existing PRDS-ADSB Installation:
 sudo systemctl stop PRDS-ADSB.service
