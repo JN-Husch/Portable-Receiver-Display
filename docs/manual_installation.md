@@ -4,21 +4,25 @@
 
    1.1 Installation of Pip:
    
-		sudo apt install python3-pip
+		sudo apt install python3-pip -y
 
-   1.2 Installation of PIL
+   1.2 (Optional - Required if you want to use a GPS Module) Installation of gpsd:
+   
+		sudo apt-get install gpsd gpsd-clients -y
+
+   1.3 Installation of PIL
    
 		python3 -m pip install --upgrade Pillow
 
-   1.3 Installation of Schedule
+   1.4 Installation of Schedule
  
 		pip install schedule
 
-   1.4 Installation of Dateutil
+   1.5 Installation of Dateutil
  
 		pip install python-dateutil
 
-   1.5 Installation of GPS interfacing software (optional):
+   1.6 Installation of GPS interfacing software (optional):
    
 		sudo -H pip3 install gps3
 
