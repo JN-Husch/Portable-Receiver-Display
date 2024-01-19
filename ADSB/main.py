@@ -79,13 +79,16 @@ clearscreen_event = threading.Event()
 ###################################################
 
 # GPS Initialization
-if use_gps:
+try:
     from gps3 import gps3
+    print("GPS3 Pip Package found")
     gps_socket = gps3.GPSDSocket()
     data_stream = gps3.DataStream()
     gps_socket.connect()
     gps_socket.watch()
-else:
+except ModuleNotFoundError:
+    print("No GPS3 Pip Package found")
+    use_gps = False
     rec_pos = home_pos
 
 
@@ -107,6 +110,7 @@ def DataProcessing():
     global rate_avg
     global flash
     global rec_pos
+    global use_gps
     global gps_pos
     global sat_cnt
     global sat_cnt_tot
@@ -238,6 +242,11 @@ def Clear():
     tgts_daily = []
 
 def getPositionData():
+    global use_gps
+
+    if not use_gps:
+        return
+    
     global rec_pos
     global home_pos
     global gps_pos

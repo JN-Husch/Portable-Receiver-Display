@@ -12,10 +12,10 @@ echo -e "\033[92m"
 echo "Installing Python3 Pip"
 echo -e "\033[37m"
 sudo apt install python3-pip -y
-echo -e "\033[92m"
-echo "Installing GPSD Client (for the GPS Module)"
-echo -e "\033[37m"
-sudo apt-get install gpsd gpsd-clients -y
+#echo -e "\033[92m"
+#echo "Installing GPSD Client (for the GPS Module)"
+#echo -e "\033[37m"
+#sudo apt-get install gpsd gpsd-clients -y
 echo -e "\033[92m"
 echo "Installing Pillow"
 echo -e "\033[37m"
@@ -28,18 +28,16 @@ echo -e "\033[92m"
 echo "Installing Python Dateutil"
 echo -e "\033[37m"
 pip install python-dateutil --break-system-packages
-echo -e "\033[92m"
-echo "Installing gps3"
-echo -e "\033[37m"
-sudo -H pip3 install gps3 --break-system-packages
+#echo -e "\033[92m"
+#echo "Installing gps3"
+#echo -e "\033[37m"
+#sudo -H pip3 install gps3 --break-system-packages
 
 echo -e "\033[92m"
-echo "Setting up Serial and SPI Ports"
+echo "Setting up SPI Communication"
 echo -e "\033[37m"
 
-# Set up Serial and SPI Communication
-sudo raspi-config nonint do_serial_hw 1 
-sudo raspi-config nonint do_serial_cons 1
+# Set up SPI Communication
 sudo raspi-config nonint do_spi 0
 
 echo -e "\033[92m"
