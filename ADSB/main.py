@@ -86,9 +86,9 @@ try:
     data_stream = gps3.DataStream()
     gps_socket.connect()
     gps_socket.watch()
-    use_gps = False
 except ModuleNotFoundError:
     print("No GPS3 Pip Package found")
+    use_gps = False
     rec_pos = home_pos
 
 
