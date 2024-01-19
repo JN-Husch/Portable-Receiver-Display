@@ -62,6 +62,8 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
 
+5. (Optional) If you want to use the GPS module, follow these instructions to set it up: [docs/gps.md](docs/gps.md)
+
 6. Reboot your Pi by running:
 
 		sudo reboot
