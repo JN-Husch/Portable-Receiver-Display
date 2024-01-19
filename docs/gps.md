@@ -76,7 +76,7 @@ To use a GPS module, you have to follow these steps:
 
 10. Install the Python GPS interfacing software:
    
-		sudo -H pip3 install gps3
+		sudo -H pip3 install gps3 --break-system-packages
 
 </br>
 
