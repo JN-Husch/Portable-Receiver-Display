@@ -4,7 +4,7 @@
 
    1.1 Installation of Pip:
    
-		sudo apt install python3-pip
+		sudo apt install python3-pip -y
 
    1.2 Installation of PIL
    
@@ -17,10 +17,6 @@
    1.4 Installation of Dateutil
  
 		pip install python-dateutil
-
-   1.5 Installation of GPS interfacing software (optional):
-   
-		sudo -H pip3 install gps3
 
 </br>
 
@@ -40,33 +36,13 @@
 
 </br>
 
-3. _(optional if usinga GPS module:)_ Enable Serial communication for the GPS (based on this helpfull guide: https://maker.pro/raspberry-pi/tutorial/how-to-use-a-gps-receiver-with-raspberry-pi-4)
-
-   3.1 Run the following command on your Pi:
-   
-		sudo raspi-config
-
-   3.2 Navigate to:
-   
-		Interfacing Options -> Serial
-
-   3.3 Select Yes Enable Serial Interface
-
-   3.4 Select No if you get asked if you want to allow access to the login-shell via serial connection
-
-   3.5 Select Yes again if you get asked if you want to keep the Serial Interface enabled
-
-   3.6 Select Finish
-
-</br>
-
-4. Reboot your Pi by running:
+3. Reboot your Pi by running:
 
 		sudo reboot
 
 </br>
 
-5. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
+4. Copy the contents of the ADSB folder to your Pi, by running the following 6 commands:
 
 		cd /home/pi
 		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
@@ -77,7 +53,7 @@
 
 </br>
 
-6. You can now test your setup, by starting the PRD Software manually:
+5. You can now test your setup, by starting the PRD Software manually:
 
   		python3 main.py
 
@@ -85,7 +61,7 @@
 
 </br>
 
-7. To automatically start the PRD Software on Pi boot, follow these three steps:
+6. To automatically start the PRD Software on Pi boot, follow these three steps:
 
 		sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
 		sudo systemctl enable PRDS-ADSB.service

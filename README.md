@@ -22,8 +22,6 @@ The harware below was used for the development build of the portable receiver. O
 
 *The Amazon links are for reference only. Exact product availability and fit may not be guaranteed!
 
-<br/>
-
 ### 3D Printed Parts
 
 The case for the portable receiver has been 3D printed. Files, required hardware and information about the 3D printed case can be on Printables: https://www.printables.com/model/720951-portable-pi-sdr-case
@@ -34,15 +32,23 @@ The case for the portable receiver has been 3D printed. Files, required hardware
 
 1. Connect the switch and the optional wiring diagramm as shown here:
 
-![Wiring Diagramm](images/wiring.png)
-_The GPS receiver is optional, but highly recommended!_
+	![Wiring Diagramm](images/wiring.png)
+
+	_The GPS receiver is optional, but highly recommended!_
+
+<br/>
 
 2. Connect the E-Ink display as explained here: [WaveShare Wiki](https://www.waveshare.com/wiki/2.9inch_e-Paper_Module_Manual#Working_With_Raspberry_Pi)
 
+<br/>
+
 3. Connect the SDR to a free USB port with the USB-A extension cable.
+
+<br/>
 
 4. Connect the USB-C to Micro-USB cable from the USB-C Panel mount to the Raspberry Pi.
 
+<br/>
 <br/>
 
 ## Software Installation
@@ -50,22 +56,36 @@ _The GPS receiver is optional, but highly recommended!_
 1. Install Linux Image on Raspberry SD card and boot the Pi.
 Recommended: Raspberry Pi OS Lite (64-bit)
 
+<br/>
 
 2. Install readsb + tar1090 on the Pi as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 
-3. Run the automatic installation script by running the following command:
+<br/>
 
-   		#sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
+3. (Optional) Install the automatic gain adjustment script, as explained here: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-gain-optimization-for-readsb-and-dump1090-fa
+   (This is required if you want the automatic gain adjustment function on Page 5 to work).
+   
+<br/>
 
+5. Run the automatic installation script by running the following command:
+
+   		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
+ 
 	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
 
+<br/>
 
-4. Reboot your Pi by running:
+6. (Optional) If you want to use the GPS module, follow these instructions to set it up: [docs/gps.md](docs/gps.md)
+
+<br/>
+
+7. Reboot your Pi by running:
 
 		sudo reboot
 
 	After your Pi has re-booted, the display should now automatically start up and show ADSB-Data.
 
+<br/>
 <br/>
 
 ## Software Update
@@ -73,6 +93,8 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 To update the PRD Software, follow these steps:
 
 1. Connect to your Pi via SSH.
+
+<br/>
 
 2. Run the following command:
 
@@ -88,12 +110,15 @@ To update the PRD Software, follow these steps:
 		git checkout
 		sudo systemctl restart PRDS-ADSB.service
 <br/>
+<br/>
 
 ## Software Removal
 
 To automatically remove the PRD Software follow these steps:
 
 1. Connect to your Pi via SSH.
+
+<br/>
 
 2. Run the following command:
 
