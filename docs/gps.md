@@ -68,7 +68,7 @@ To use a GPS module, you have to follow these steps:
 
 8. Test your GPS by running the following command:
 
-        cpgs -s
+        cgps -s
 
    The interface should show basic GPS information, like time, 3D position and received satellites. 
 
