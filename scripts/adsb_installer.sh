@@ -59,19 +59,20 @@ echo -e "\033[37m"
 python3 -m pip install --upgrade Pillow
 
 echo -e "\033[92m"
-echo "Installing Schedule"
-echo -e "\033[37m"
-pip install schedule
-
-echo -e "\033[92m"
 echo "Installing Python Dateutil"
 echo -e "\033[37m"
 pip install python-dateutil
 
 echo -e "\033[92m"
-echo "Installing RPI.GPIO"
+echo "Installing gpiozero"
 echo -e "\033[37m"
-pip install rpi-lgpio
+pip install gpiozero
+
+echo -e "\033[92m"
+echo "Installing spidev"
+echo -e "\033[37m"
+pip install spidev
+
 
 #echo -e "\033[92m"
 #echo "Installing gps3"
