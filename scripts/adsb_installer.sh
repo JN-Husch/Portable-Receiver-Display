@@ -66,6 +66,11 @@ echo "Installing Python Dateutil"
 echo -e "\033[37m"
 pip install python-dateutil
 
+
+echo -e "\033[92m"
+echo "Installing RPI.GPIO"
+echo -e "\033[37m"
+pip3 install RPi.GPIO
 #echo -e "\033[92m"
 #echo "Installing gps3"
 #echo -e "\033[37m"
