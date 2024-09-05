@@ -69,7 +69,7 @@ pip install python-dateutil
 echo -e "\033[92m"
 echo "Installing RPI.GPIO"
 echo -e "\033[37m"
-pip install gpiozero
+pip install RPi.GPIO
 
 #echo -e "\033[92m"
 #echo "Installing gps3"
@@ -82,8 +82,6 @@ echo -e "\033[37m"
 
 # Set up SPI Communication
 sudo raspi-config nonint do_spi 0
-
-
 
 
 echo -e "\033[92m"
