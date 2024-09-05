@@ -80,4 +80,24 @@ To use a GPS module, you have to follow these steps:
 
 </br>
 
+11. To enable the GPS position on TAR1090 and GRAPHS1090 (if installed), add the stream to the readsb configuration file:
+
+	11.1 Open the readsb configuration file with the text editor:
+		
+  		sudo nano /etc/default/readsb
+
+	11.2 Find the following line:
+
+      		NET_OPTIONS="--net ......"
+
+	11.3 At the end, ahead of the ending ", add the following:
+
+  		--net-connector localhost,2947,gpsd_in
+      		
+	11.4 Save the file and close the editor (Ctrl + X)
+
+ 	11.5 Reboot one final time.
+
+</br>
+
 All done!
