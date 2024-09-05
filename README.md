@@ -71,8 +71,6 @@ Recommended: Raspberry Pi OS Lite (64-bit)
 
    		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
  
-	(It is also possible to manually install the software, see [docs/manual_installation.md](docs/manual_installation.md) for instructions.
-
 <br/>
 
 6. (Optional) If you want to use the GPS module, follow these instructions to set it up: [docs/gps.md](docs/gps.md)
@@ -100,15 +98,6 @@ To update the PRD Software, follow these steps:
 
    		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
 
-	Alternatively, you can also manually update, by running the following commands:
-
-		cd /home/pi
-		sudo rm -r PRDS
-		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
-		cd PRDS
-		git sparse-checkout set ADSB
-		git checkout
-		sudo systemctl restart PRDS-ADSB.service
 <br/>
 <br/>
 
