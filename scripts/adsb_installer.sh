@@ -54,7 +54,7 @@ source .venv/bin/activate
 echo -e "\033[92m"
 echo "Installing Pillow"
 echo -e "\033[37m"
-sudo python3 -m pip install --upgrade Pillow
+sudo pip install Pillow
 
 echo -e "\033[92m"
 echo "Installing Python Dateutil"
