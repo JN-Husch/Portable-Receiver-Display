@@ -37,7 +37,7 @@ home_pos.lat = 0                    # Home Latitude
 home_pos.lng = 0                    # Home Longitude
 home_pos.alt = 0                    # Home Altitude in m
 
-use_gps = False                      # Variable if a GPS receiver is available
+use_gps = True                      # Variable if a GPS receiver is available
 
 ####################################################################################
 #
