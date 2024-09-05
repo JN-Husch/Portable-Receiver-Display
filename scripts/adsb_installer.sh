@@ -54,23 +54,22 @@ source .venv/bin/activate
 echo -e "\033[92m"
 echo "Installing Pillow"
 echo -e "\033[37m"
-sudo pip install Pillow
+pip install Pillow
 
 echo -e "\033[92m"
 echo "Installing Python Dateutil"
 echo -e "\033[37m"
-sudo pip install python-dateutil
+pip install python-dateutil
 
 echo -e "\033[92m"
 echo "Installing gpiozero"
 echo -e "\033[37m"
-sudo pip install gpiozero
+pip install gpiozero
 
 echo -e "\033[92m"
 echo "Installing spidev"
 echo -e "\033[37m"
-sudo pip install spidev
-
+pip install spidev
 
 #echo -e "\033[92m"
 #echo "Installing gps3"
