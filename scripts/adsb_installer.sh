@@ -69,7 +69,7 @@ pip install python-dateutil
 echo -e "\033[92m"
 echo "Installing RPI.GPIO"
 echo -e "\033[37m"
-pip install RPi.GPIO
+pip install rpi-lgpio
 
 #echo -e "\033[92m"
 #echo "Installing gps3"
