@@ -88,9 +88,10 @@ echo -e "\033[37m"
 # Get new PRDS from Github:
 cd /home/pi
 git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git temp
-mv temp/.git PRDS/.git
-rm -rf temp
+sudo mv temp/.git PRDS/.git
+sudo rm -rf temp
 cd PRDS
+git config --global --add safe.directory /home/pi/PRDS
 git sparse-checkout set ADSB
 git checkout
 cd ADSB
