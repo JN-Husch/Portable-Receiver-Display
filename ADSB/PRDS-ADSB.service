@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle  
-ExecStart=/usr/bin/python3 /home/pi/PRDS/ADSB/main.py
+ExecStart=/home/pi/PRDS/venv/bin/python3 /home/pi/PRDS/ADSB/main.py
 Restart=always
 RestartSec=20
 WorkingDirectory=/home/pi/PRDS/ADSB/
