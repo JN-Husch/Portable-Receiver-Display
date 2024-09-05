@@ -39,6 +39,6 @@ def ShutdownImage(img):
     img = CreateText(img,5,296 - 95,"Receiver",font="ArialBold.ttf",sze=20)
     img = CreateText(img,5,296 - 70,"Software",font="ArialBold.ttf",sze=20)
     img = CreateText(img,5,296 - 45,"by JN-Husch",font="Arial.ttf",sze=20)
-    img = CreateText(img,5,296 - 20,"Version: 1.0.0",font="Arial.ttf",sze=15)
+    img = CreateText(img,5,296 - 20,"Version: 1.1.0",font="Arial.ttf",sze=15)
     
     return img   

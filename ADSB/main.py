@@ -4,15 +4,16 @@
 
 import threading
 import time
+from time import sleep
 import DataFetcher
 import VectorCalc
 import Classes
 import Drawer
 import Pages
 import operator
-import schedule
 import os
-import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+from gpiozero import Button
+from signal import pause
 import json
 
 from dateutil import parser
@@ -36,7 +37,7 @@ home_pos.lat = 0                    # Home Latitude
 home_pos.lng = 0                    # Home Longitude
 home_pos.alt = 0                    # Home Altitude in m
 
-use_gps = True                      # Variable if a GPS receiver is available
+use_gps = False                      # Variable if a GPS receiver is available
 
 ####################################################################################
 #
@@ -317,103 +318,63 @@ def getPositionData():
                 if sat['used']:
                     sat_cnt = sat_cnt + 1
 
-            #return
 
-# Custom function to debounce hardware buttons
-class ButtonHandler(threading.Thread):
-    def __init__(self, pin, func, edge='both', bouncetime=200):
-        super().__init__(daemon=True)
+button_pwr = Button(3, bounce_time=0.1)
+button_fnc = Button(4, bounce_time=0.1)
 
-        self.edge = edge
-        self.func = func
-        self.pin = pin
-        self.bouncetime = float(bouncetime)/1000
+timer_fnc = 0
 
-        self.lastpinval = GPIO.input(self.pin)
-        self.lock = threading.Lock()
 
-    def __call__(self, *args):
-        if not self.lock.acquire(blocking=False):
-            return
+def pwr_btn_mom():
+    # Power Button Momentarily   
+    global shutdown_event
+    shutdown_event.set()
 
-        t = threading.Timer(self.bouncetime, self.read, args=args)
-        t.start()
 
-    def read(self, *args):
-        pinval = GPIO.input(self.pin)
+def fnc_btn_rise():
+    global timer_fnc
+    timer_fnc = time.time()
 
-        if (
-                ((pinval == 0 and self.lastpinval == 1) and
-                 (self.edge in ['falling', 'both'])) or
-                ((pinval == 1 and self.lastpinval == 0) and
-                 (self.edge in ['rising', 'both']))
-        ):
-            self.func(*args)
 
-        self.lastpinval = pinval
-        self.lock.release()
-
-# Target for debounced button fuctionality
-def real_cb(channel):
-    global page_no
-    global page_timer
-    global adjusting_gain
-
-    if channel == 3:
-        # PowerButton
-        shutdown_event.set()
-        return
-    
-    if channel == 4:
-        # Function Button
-
-        if GPIO.input(4):
-            # Falling Edge
+def fnc_btn_fall():
+    # Function Button Handler
+    global page_no, use_gps, adjusting_gain, timer_fnc
+       
+    if (time.time() - timer_fnc) < 1:
+        #Short Press
+        page_no = page_no + 1
             
-            if time.time() - page_timer > 0.5:
-                # Detect Long press
-                if page_no == 4:
-                    # On Page 4, use Long Press to adjust Gain
-                    adjusting_gain = True
-                    os.system("sudo autogain1090")
-                    time.sleep(3)
-                    adjusting_gain = False
-                else:
-                    # On all other pages, reset page to 0, without screen refresh
-                    page_no = 0 
-                return 
-            
+        # If GPS is not used, skip GPS page
+        if not use_gps and page_no == 3:
             page_no = page_no + 1
-            
-            # If GPS is not used, skip GPS page
-            if not use_gps and page_no == 3:
-                page_no = page_no + 1
 
-            # If page is larger than maximum number of pages, reset to 0
-            if page_no > page_max:
-                page_no = 0
-                clearscreen_event.set()
-        
+        # If page is larger than maximum number of pages, reset to 0
+        if page_no > page_max:
+            page_no = 0
+            clearscreen_event.set()
+
+
+def fnc_btn_held():
+    # Function Button Handler
+    global page_no, use_gps, adjusting_gain, timer_fnc
+       
+    if (time.time() - timer_fnc) > 1:
+        #Long Press
+        if page_no == 4:
+            # On Page 4, use Long Press to adjust Gain
+            adjusting_gain = True
+            os.system("sudo autogain1090")
+            time.sleep(3)
+            adjusting_gain = False
         else:
-            # Rising Edge
-            page_timer = time.time()
+            # On all other pages, reset page to 0, without screen refresh
+            page_no = 0 
 
-        return
-    
-    
-# GPIO Setup
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-cb1 = ButtonHandler(3, real_cb, edge='falling', bouncetime=10)      # For the shutdown button, only trigger on falling edge
-cb1.start()
-
-cb2 = ButtonHandler(4, real_cb, edge='both', bouncetime=10)         # For the function button, trigger on both edges - for timing functionality
-cb2.start()
-
-GPIO.add_event_detect(3, GPIO.BOTH, callback=cb1)
-GPIO.add_event_detect(4, GPIO.BOTH, callback=cb2)
+button_pwr.when_pressed = pwr_btn_mom
+button_fnc.when_pressed = fnc_btn_rise
+button_fnc.when_released = fnc_btn_fall
+button_fnc.when_held = fnc_btn_held
 
 #t1 - Main Thread for data processing
 t1 = threading.Thread(target=task1)
@@ -424,10 +385,5 @@ if use_gps:
     t2 = threading.Thread(target=task2)
     t2.start()
 
-print("Starting schedules...")
-#schedule.every().day.at("00:05").do(Clear)
-#schedule.every(2).minutes.do(task2)
-
 while True:
-    schedule.run_pending()
     time.sleep(0.1)
