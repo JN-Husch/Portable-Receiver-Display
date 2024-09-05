@@ -100,15 +100,6 @@ To update the PRD Software, follow these steps:
 
    		sudo bash -c "$(wget -O - https://raw.githubusercontent.com/JN-Husch/Portable-Receiver-Display/main/scripts/adsb_installer.sh)"
 
-	Alternatively, you can also manually update, by running the following commands:
-
-		cd /home/pi
-		sudo rm -r PRDS
-		git clone --depth 1 --no-checkout https://github.com/JN-Husch/Portable-Receiver-Display.git PRDS
-		cd PRDS
-		git sparse-checkout set ADSB
-		git checkout
-		sudo systemctl restart PRDS-ADSB.service
 <br/>
 <br/>
 
