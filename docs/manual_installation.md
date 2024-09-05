@@ -1,5 +1,11 @@
 ## Manual Software Installation
 
+
+!!!!IMPORTANT!!!!
+Installation into a virtual environment recommended - Guide is not up to date. Use automatic installation instead!
+
+
+
 1. Connect to your Pi via SSH and run the following commands:
 
    1.1 Installation of Pip:
@@ -10,9 +16,9 @@
    
 		python3 -m pip install --upgrade Pillow
 
-   1.3 Installation of Schedule
+   1.3 Installation of gpiozero
  
-		pip install schedule
+		pip install gpiozero
 
    1.4 Installation of Dateutil
  
