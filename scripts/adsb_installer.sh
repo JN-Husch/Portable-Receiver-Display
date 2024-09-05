@@ -84,4 +84,3 @@ echo "------------------------------------------------"
 echo "Installation complete!"
 echo -e "\033[37m"
 echo "Please re-boot the Pi by running sudo reboot"
-

@@ -68,7 +68,7 @@ To use a GPS module, you have to follow these steps:
 
 8. Test your GPS by running the following command:
 
-        cpgs -s
+        cgps -s
 
    The interface should show basic GPS information, like time, 3D position and received satellites. 
 
@@ -77,6 +77,26 @@ To use a GPS module, you have to follow these steps:
 10. Install the Python GPS interfacing software:
    
 		sudo -H pip3 install gps3 --break-system-packages
+
+</br>
+
+11. To enable the GPS position on TAR1090 and GRAPHS1090 (if installed), add the stream to the readsb configuration file:
+
+	11.1 Open the readsb configuration file with the text editor:
+		
+  		sudo nano /etc/default/readsb
+
+	11.2 Find the following line:
+
+      		NET_OPTIONS="--net ......"
+
+	11.3 At the end, ahead of the ending ", add the following:
+
+  		--net-connector localhost,2947,gpsd_in
+      		
+	11.4 Save the file and close the editor (Ctrl + X)
+
+ 	11.5 Reboot one final time.
 
 </br>
 
