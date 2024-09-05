@@ -19,15 +19,23 @@ sudo apt install python3-pip -y
 echo -e "\033[92m"
 echo "Installing Pillow"
 echo -e "\033[37m"
-python3 -m pip install --upgrade Pillow --break-system-packages
+echo -e "\033[92m"
+echo "Setting up VENV"
+echo -e "\033[37m"
+cd /home/pi
+mkdir PRDS
+cd /home/pi/PRDS
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade Pillow
 echo -e "\033[92m"
 echo "Installing Schedule"
 echo -e "\033[37m"
-pip install schedule --break-system-packages
+pip install schedule
 echo -e "\033[92m"
 echo "Installing Python Dateutil"
 echo -e "\033[37m"
-pip install python-dateutil --break-system-packages
+pip install python-dateutil
 #echo -e "\033[92m"
 #echo "Installing gps3"
 #echo -e "\033[37m"
@@ -78,6 +86,12 @@ echo -e "\033[37m"
 sudo cp /home/pi/PRDS/ADSB/PRDS-ADSB.service /etc/systemd/system
 sudo systemctl enable PRDS-ADSB.service
 sudo systemctl start PRDS-ADSB.service
+
+echo -e "\033[92m"
+echo "Deactivating VENV"
+echo -e "\033[37m"
+
+deactivate
 
 echo -e "\033[92m"
 echo "------------------------------------------------"
