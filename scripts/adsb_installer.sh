@@ -17,9 +17,6 @@ sudo apt install python3-pip -y
 #echo -e "\033[37m"
 #sudo apt-get install gpsd gpsd-clients -y
 echo -e "\033[92m"
-echo "Installing Pillow"
-echo -e "\033[37m"
-echo -e "\033[92m"
 echo "Setting up VENV"
 echo -e "\033[37m"
 cd /home/pi
@@ -27,6 +24,9 @@ mkdir PRDS
 cd /home/pi/PRDS
 python3 -m venv .venv
 source .venv/bin/activate
+echo -e "\033[92m"
+echo "Installing Pillow"
+echo -e "\033[37m"
 python3 -m pip install --upgrade Pillow
 echo -e "\033[92m"
 echo "Installing Schedule"
