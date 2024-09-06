@@ -48,6 +48,10 @@ To use a GPS module, you have to follow these steps:
 
     5.1 Open the /boot/config.txt with a text-editor:
 
+       sudo nano /boot/firmware/config.txt
+
+   (on older variants of Raspbian, the path might be:)
+
        sudo nano /boot/config.txt
 
    5.2 At the bottom of the file, add the following line:
