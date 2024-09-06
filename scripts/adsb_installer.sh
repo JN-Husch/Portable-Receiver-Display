@@ -76,10 +76,10 @@ echo "Installing spidev"
 echo -e "\033[37m"
 pip install spidev
 
-#echo -e "\033[92m"
-#echo "Installing gps3"
-#echo -e "\033[37m"
-#sudo -H pip3 install gps3
+echo -e "\033[92m"
+echo "Installing gps3"
+echo -e "\033[37m"
+pip install gps3
 
 echo -e "\033[92m"
 echo "Setting up SPI Communication"
