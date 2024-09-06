@@ -62,6 +62,11 @@ echo -e "\033[37m"
 pip install python-dateutil
 
 echo -e "\033[92m"
+echo "Installing lgpio"
+echo -e "\033[37m"
+sudo pip install lgpio
+
+echo -e "\033[92m"
 echo "Installing gpiozero"
 echo -e "\033[37m"
 pip install gpiozero
