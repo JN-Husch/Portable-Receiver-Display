@@ -30,7 +30,7 @@ The case for the portable receiver has been 3D printed. Files, required hardware
 
 ## Wiring Guide
 
-1. Connect the switch and the optional wiring diagramm as shown here:
+1. Connect the switch and the optional GPS wiring diagramm as shown here:
 
 	![Wiring Diagramm](images/wiring.png)
 
